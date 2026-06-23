@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIHello's网站</title>
+    <!-- 引用外部样式 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-wrapper">
+
+    <!-- ========== 头部 ========== -->
+    <div class="header">
+        <h1>🎮 HIHello's 网站</h1>
+        <p>常用的教程，带有图文，方便使用</p>
+    </div>
+
+    <!-- ========== 页面1: 指南 ========== -->
+    <div id="page-guide" class="page">
+        <div class="section-sub">📖 指南 · 点击模块展开，再点条目查看图片</div>
+        
+         <!-- 模块5: 备用指南（正在游玩的游戏） -->
+        <div class="guide-module module-backup">
+            <div class="module-title">
+                <span>🎮 备用指南 · 当前游戏教程</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="module-content">
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>🔄 暂无</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <img class="step-img" src="替换我为相对路径" alt="游戏教程图1">
+                        <div class="step-caption"><strong>步骤1：</strong> 1</div>
+                        <img class="step-img" src="替换我为相对路径" alt="游戏教程图2">
+                        <div class="step-caption"><strong>步骤2：</strong> 2</div>
+                        <!-- <p style="color:#6A7A8E; font-size:13px;">📌 此模块内容可随时替换为当前正在玩的游戏教程。</p> -->
+                    </div>
+                </div>
+                <!-- 可以再添加多个条目，根据需求 -->
+            </div>
+        </div>
+
+        <!-- 模块1: Steam相关 -->
+        <div class="guide-module">
+            <div class="module-title">
+                <span>🟦 Steam 相关</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="module-content">
+                <!-- 条目1 -->
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>🚫 Steam 禁止更新 CFG 添加方法</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <img class="step-img" src="images/steam_cfg/steam_cfg01.png" alt="步骤图1">
+                        <div class="step-caption"><strong>步骤1：</strong> 找到你的steam根目录,如图所示</div>
+                        <img class="step-img" src="images/steam_cfg/steam_cfg02.png" alt="步骤图2">
+                        <div class="step-caption"><strong>步骤2：</strong> 下载工具栏里面的"Steam 禁止更新 CFG"。</div>
+                        <img class="step-img" src="images/steam_cfg/steam_cfg03.png" alt="步骤图3">
+                        <div class="step-caption"><strong>步骤3：</strong> 将下载下来的cfg放入steam根目录。重启即可</div>
+                        <!-- <p style="color:#6A7A8E; font-size:13px;">💡 将你的截图替换上面的占位图，可放多张。</p> -->
+                    </div>
+                </div>
+                <!-- 条目2 -->
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>🔍 Steam 版本查看</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <img class="step-img" src="images/steam_version/steam_version.png" alt="版本查看图">
+                        <div class="step-caption">点击左上角“Steam” → “关于 Steam” 即可看到版本号。</div>
+                        <p style="color:#6A7A8E; font-size:13px;">也可在控制台输入 version 命令。</p>
+                    </div>
+                </div>
+                <!-- 条目3 -->
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>🧹 Steam 清除下载缓存</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <img class="step-img" src="images/steam_cleandownload/steam_cleandownload01.png" alt="清除缓存图1">
+                        <img class="step-img" src="images/steam_cleandownload/steam_cleandownload02.png" alt="清除缓存2">
+                        <div class="step-caption">打开Steam设置 → 下载 → 点击“清除下载缓存” → 重启Steam。</div>
+                        <p style="color:#6A7A8E; font-size:13px;">🔁 不会删除游戏文件，只清理临时数据。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块2: SteamTools相关 -->
+        <div class="guide-module">
+            <div class="module-title">
+                <span>🛠️ SteamTools 相关</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="module-content">
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>📦 SteamTools 使用方法(暂无)</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <!-- <img class="step-img" src="https://picsum.photos/800/400?random=6" alt="SteamTools步骤1">
+                        <div class="step-caption"><strong>步骤1：</strong> 下载解压SteamTools，以管理员身份运行。</div>
+                        <img class="step-img" src="https://picsum.photos/800/400?random=7" alt="SteamTools步骤2">
+                        <div class="step-caption"><strong>步骤2：</strong> 在设置中勾选“开启解锁模式”。</div>
+                        <img class="step-img" src="https://picsum.photos/800/400?random=8" alt="SteamTools步骤3">
+                        <div class="step-caption"><strong>步骤3：</strong> 重启Steam，生效。</div> -->
+                        <!-- <p style="color:#6A7A8E; font-size:13px;">⚠️ 建议仅在单机/离线环境下使用。</p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块3: 电脑远控相关 -->
+        <div class="guide-module">
+            <div class="module-title">
+                <span>🖥️ 电脑远控相关</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="module-content">
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>📡 爱思远控使用方法</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <img class="step-img" src="images/i4_help/i4_help01.png" alt="爱思远控步骤1">
+                        <div class="step-caption"><strong>步骤1：</strong> 下载安装爱思远控</div>
+                        <img class="step-img" src="images/i4_help/i4_help02.png" alt="爱思远控步骤2">
+                        <div class="step-caption"><strong>步骤2：</strong> 将远控码和密码复制发给远控你的人,注意密码不会自动复制</div>
+                         <p style="color:#6A7A8E; font-size:13px;">⚠️ 请发送给你信任的人！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块4: 虚拟局域网相关 -->
+        <div class="guide-module">
+            <div class="module-title">
+                <span>🌐 虚拟局域网相关</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="module-content">
+                <div class="guide-card">
+                    <div class="guide-title">
+                        <span>🔗 RadminLAN 使用方法</span>
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="guide-content">
+                        <img class="step-img" src="images/radmin_help/radmin_help01.png" alt="RadminLAN步骤1">
+                        <div class="step-caption"><strong>步骤1：</strong> 下载并安装radmin</div>
+                        <img class="step-img" src="images/radmin_help/radmin_help02.png" alt="RadminLAN步骤2">
+                        <div class="step-caption"><strong>步骤2：</strong> 第一次加载</div>
+                        <img class="step-img" src="images/radmin_help/radmin_help03.png" alt="RadminLAN步骤3">
+                        <div class="step-caption"><strong>步骤3：</strong> 修改名字</div>
+                        <img class="step-img" src="images/radmin_help/radmin_help04.png" alt="RadminLAN步骤4">
+                        <div class="step-caption"><strong>步骤4：</strong> 加入/创建局域网</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页面2: 工具 ========== -->
+    <div id="page-tools" class="page">
+        <div class="section-sub">🧰 常用工具下载</div>
+        <div class="tool-list">
+            <div class="tool-item">
+                <span class="icon">🖥️</span>
+                <div class="info">
+                    <div class="name">爱思远控 Lite</div>
+                    <div class="desc">轻量远程控制</div>
+                </div>
+                <a href="https://d-app6.i4.cn/i4tools/remote/win/i4Remote_Lite_1.0.32.exe" class="link">下载</a>
+                <a href="downloads/i4Remote_Lite_1.0.32.exe" class="link">备用下载</a>
+            </div>
+            <div class="tool-item">
+                <span class="icon">🎮</span>
+                <div class="info">
+                    <div class="name">Steam 官方</div>
+                    <div class="desc">游戏平台</div>
+                </div>
+                <a href="https://store.steampowered.com/about/" class="link">访问</a>
+            </div>
+            <div class="tool-item">
+                <span class="icon">🔗</span>
+                <div class="info">
+                    <div class="name">RadminLAN</div>
+                    <div class="desc">虚拟局域网</div>
+                </div>
+                <a href="https://www.radmin-lan.cn/" class="link">下载</a>
+                <a href="downloads/Radmin_LAN_1.4.4642.1.exe" class="link">备用下载</a>
+            </div>
+            <div class="tool-item">
+                <span class="icon">📄</span>
+                <div class="info">
+                    <div class="name">Steam 禁止更新 CFG</div>
+                    <div class="desc">配置文件模板</div>
+                </div>
+                <a href="downloads/Steam.cfg" class="link">下载</a>
+            </div>
+            <div class="tool-item">
+                <span class="icon">💬</span>
+                <div class="info">
+                    <div class="name">KOOK</div>
+                    <div class="desc">语音开黑</div>
+                </div>
+                <a href="https://www.kookapp.cn/" class="link">访问</a>
+            </div>
+            <div class="tool-item">
+                <span class="icon">🛠️</span>
+                <div class="info">
+                    <div class="name">SteamTools</div>
+                    <div class="desc">解锁辅助工具</div>
+                </div>
+                <a href="https://www.steamtools.net/" class="link">访问</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页面3: 公告 ========== -->
+    <div id="page-notice" class="page active">
+        <div class="section-sub">📢 公告 · 置顶内容会显示在最前面</div>
+        <div class="notice-list">
+            <!-- 置顶公告（特殊样式） -->
+            <div class="notice-card pinned">
+                <div class="notice-title">
+                    <span class="pin-icon">📌</span> 基础信息
+                </div>
+                <div class="notice-content">
+                    <p><strong>RadminLAN 网络：</strong> 名称：暂无 ｜ 密码：暂无</p>
+                    <p><strong>KOOK 频道：</strong> 暂无</p>
+                </div>
+                <div class="notice-date">永久置顶</div>
+            </div>
+            <!-- 普通公告1 -->
+            <div class="notice-card">
+                <div class="notice-title">⚠️ Steam 更新提醒</div>
+                <div class="notice-content">
+                    <p>如果你想用steamtools,请禁用steam自动更新，请参考「Steam 禁止更新 CFG 添加方法」。</p>
+                </div>
+                <div class="notice-date">2026-06-20</div>
+            </div>
+             <!-- 普通公告2 -->
+            <div class="notice-card">
+                <div class="notice-title">示例标题</div>
+                <div class="notice-content">
+                    <p>示例内容</p>
+                </div>
+                <div class="notice-date">示例日期</div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+</div>
+
+<!-- ========== 底部导航（三个标签） ========== -->
+<div class="bottom-nav">
+    <button class="nav-item active" data-target="page-notice">
+        <span class="icon">📢</span><span>公告</span>
+    </button>
+    <button class="nav-item" data-target="page-guide">
+        <span class="icon">📖</span><span>指南</span>
+    </button>
+    <button class="nav-item" data-target="page-tools">
+        <span class="icon">🧰</span><span>工具</span>
+    </button>
+</div>
+
+<!-- 引用外部脚本 -->
+<script src="script.js"></script>
+</body>
+</html>
