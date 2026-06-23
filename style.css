@@ -319,3 +319,128 @@ hr {
 .module-backup .module-title {
     border-left: 4px solid #F59E0B;
 }
+
+
+/* ========== 移动端适配 (屏幕宽度 <= 768px) ========== */
+@media (max-width: 768px) {
+    body {
+        padding: 16px 12px 90px; /* 底部留足空间给导航 */
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+    .header p {
+        font-size: 13px;
+    }
+
+    /* 指南模块标题 */
+    .module-title {
+        font-size: 16px;
+        padding: 12px 16px;
+    }
+    .guide-title {
+        font-size: 14px;
+        padding: 12px 14px;
+    }
+
+    /* 指南内容内边距 */
+    .guide-module.open .module-content {
+        padding: 12px 16px 20px;
+    }
+    .guide-card.open .guide-content {
+        padding: 12px 14px 16px;
+    }
+    .guide-content .step-caption {
+        font-size: 13px;
+    }
+
+    /* 工具列表变为一列 */
+    .tool-list {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .tool-item {
+        padding: 14px 16px;
+        flex-wrap: wrap; /* 让内部元素换行 */
+    }
+    .tool-item .icon {
+        font-size: 24px;
+    }
+    .tool-item .name {
+        font-size: 15px;
+    }
+    .tool-item .link {
+        font-size: 13px;
+        padding: 4px 12px;
+        margin: 2px 0;
+    }
+    /* 当工具项有多个链接时，让它们自然排列 */
+    .tool-item .info {
+        flex: 1 1 60%; /* 给名称和描述足够的空间 */
+    }
+    .tool-item a.link {
+        flex-shrink: 0;
+    }
+
+    /* 公告卡片 */
+    .notice-card {
+        padding: 16px 18px;
+    }
+    .notice-card .notice-title {
+        font-size: 16px;
+    }
+    .notice-card .notice-content {
+        font-size: 14px;
+    }
+
+    /* 底部导航 */
+    .bottom-nav {
+        min-width: auto;
+        width: 92%;
+        padding: 6px 8px;
+        border-radius: 40px;
+        bottom: 16px;
+        gap: 4px;
+    }
+    .nav-item {
+        padding: 8px 14px;
+        font-size: 13px;
+        gap: 6px;
+    }
+    .nav-item .icon {
+        font-size: 18px;
+    }
+
+    /* 图片自适应 */
+    .guide-content .step-img {
+        border-radius: 6px;
+    }
+}
+
+/* ========== 超小屏 (宽度 <= 480px) 进一步优化 ========== */
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 20px;
+    }
+    .bottom-nav {
+        width: 98%;
+        padding: 4px 4px;
+    }
+    .nav-item {
+        padding: 6px 10px;
+        font-size: 12px;
+        gap: 4px;
+    }
+    .nav-item .icon {
+        font-size: 16px;
+    }
+    .module-title {
+        font-size: 15px;
+        padding: 10px 14px;
+    }
+    .guide-title {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+}
