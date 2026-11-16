@@ -8,8 +8,7 @@
 </head>
 <body>
 <div class="app-wrapper">
-
-    <!-- 头部：增加了主题切换按钮 -->
+    <!-- 头部 -->
     <div class="header">
         <div>
             <h1>🎮 HIHello's 网站</h1>
@@ -18,91 +17,8 @@
         <button id="theme-toggle" class="theme-btn" title="切换主题">🌙</button>
     </div>
 
-    <!-- ========== 页面1: 指南 ========== -->
-    <div id="page-guide" class="page">
-        <div class="section-sub">📖 指南 · 点击模块展开，再点条目查看图片</div>
-        <div id="guide-container"></div>
-    </div>
-
-    <!-- ========== 页面2: 工具 ========== -->
-    <div id="page-tools" class="page">
-        <div class="section-sub">🧰 常用工具下载</div>
-        <!-- 增加了搜索框 -->
-        <input type="text" id="tool-search" class="search-input" placeholder="🔍 搜索工具名称或描述...">
-        <div class="tool-list" id="tool-container"></div>
-    </div>
-
-    <!-- ========== 页面3: 公告 ========== -->
-    <div id="page-notice" class="page active">
-        <div class="section-sub">📢 公告 · 置顶公告不会移动</div>
-        <div class="notice-list">
-
-            <!-- #region 公告示例 -->
-            <!-- ========================================== -->
-            <!-- 📝 以下为公告模板，需要添加新公告时，复制对应模板，删掉注释符号即可 -->
-            <!-- ========================================== -->
-
-            <!-- 模板 1：置顶公告（带有黄色边框、📌图标、永久置顶字样） -->
-            <!-- 
-            <div class="notice-card pinned">
-                <div class="notice-title">
-                    <span class="pin-icon">📌</span> 置顶标题
-                </div>
-                <div class="notice-content">
-                    <p>普通内容</p>
-                    <p><strong>加粗内容：</strong> 详细说明</p>
-                </div>
-                <div class="notice-date">永久置顶</div>
-            </div>
-            -->
-
-            <!-- 模板 2：普通公告（没有黄色边框，正常显示时间） -->
-            <!-- 
-            <div class="notice-card">
-                <div class="notice-title">⚠️ 公告标题</div>
-                <div class="notice-content">
-                    <p>这里是公告的具体内容，可以写很多行。</p>
-                    <p>如果需要重点突出，可以像这样：<strong>注意！</strong></p>
-                </div>
-                <div class="notice-date">2026-06-20</div>
-            </div>
-            -->
-            <!-- #endregion -->
-            
-            <!-- 第一个公告 -->
-            <div class="notice-card pinned">
-                <div class="notice-title">
-                    <span class="pin-icon">📌</span> 基础信息
-                </div>
-                <div class="notice-content">
-                    <!-- 复制按钮 -->
-                    <p><strong>RadminLAN 网络：</strong> 名称：暂无 ｜ 密码：<span id="radmin-pwd">暂无</span> 
-                        <button class="copy-btn" data-copy="暂无">📋 复制</button>
-                    </p>
-                    <p><strong>KOOK 频道：</strong> 暂无</p>
-                </div>
-                <div class="notice-date">永久置顶</div>
-            </div>
-            <!-- 第二个公告 -->
-            <div class="notice-card">
-                <div class="notice-title">⚠️ Steam 更新提醒</div>
-                <div class="notice-content">
-                    <p>当前使用KeySteam,无需在意Steam更新</p>
-                </div>
-                <div class="notice-date">2026-11-16(本公告七天后删除)</div>
-            </div>
-            <!-- 第三个公告 -->
-            <div class="notice-card">
-                <div class="notice-title">⚠️ SteamTools已停止支持</div>
-                <div class="notice-content">
-                    <p>请更新使用KeySteam,SteamTools已成历史</p>
-                </div>
-                <div class="notice-date">2026-11-16</div>
-            </div>
-        </div>
-    </div>
-
-    <hr>
+    <!-- 页面内容容器（由 JS 动态注入） -->
+    <div id="page-container"></div>
 </div>
 
 <!-- 底部导航 -->
@@ -116,11 +32,19 @@
     <button class="nav-item" data-target="page-tools">
         <span class="icon">🧰</span><span>工具</span>
     </button>
+    <button class="nav-item" data-target="page-game">
+        <span class="icon">🎮</span><span>游戏</span>
+    </button>
 </div>
 
-<!-- 全局 Toast 提示框（平时隐藏，复制成功时弹出） -->
-<div id="toast" class="toast">复制成功！</div>
+<!-- 全局组件 -->
+<div id="toast" class="toast">操作成功！</div>
+<button id="back-to-top" title="回到顶部">🚀</button>
 
+<script src="js/data.js"></script>
+<script src="js/minesweeper.js"></script>
+<script src="js/snake.js"></script>
+<script src="js/tetris.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

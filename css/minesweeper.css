@@ -1,0 +1,203 @@
+/* ========================================== */
+/* 扫雷游戏 */
+/* ========================================== */
+.ms-difficulty {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.ms-diff-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.ms-diff-btn:hover { background: var(--primary-bg); }
+.ms-diff-btn.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* 自定义配置面板 */
+.ms-custom-panel {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    flex-wrap: wrap;
+}
+
+.ms-custom-panel.show { display: flex; }
+.ms-custom-panel label {
+    font-size: 14px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ms-custom-panel input {
+    width: 60px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+    background: var(--bg-color);
+    color: var(--text-color);
+    text-align: center;
+    outline: none;
+}
+
+.ms-custom-panel input:focus { border-color: var(--primary-color); }
+
+.ms-options {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.ms-options input[type="checkbox"] {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+/* 状态栏 */
+.ms-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.ms-led {
+    background: #000;
+    color: #FF3B30;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 22px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    min-width: 56px;
+    text-align: center;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+}
+
+.ms-face-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 26px;
+    background: var(--module-title-bg);
+    border: 1px solid var(--card-border);
+    cursor: pointer;
+    border-radius: 10px;
+    line-height: 1;
+    transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ms-face-btn:hover {
+    background: var(--primary-bg);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.ms-face-btn:active { transform: scale(0.95); }
+
+/* 棋盘 */
+.ms-board {
+    display: grid;
+    gap: 3px;
+    background: var(--bg-color);
+    padding: 8px;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+/* 格子 */
+.ms-cell {
+    width: 28px;
+    height: 28px;
+    background: var(--module-title-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    -webkit-touch-callout: none;
+    transition: 0.1s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ms-cell:hover {
+    background: var(--primary-bg);
+    border-color: var(--primary-color);
+}
+
+.ms-cell.ms-revealed {
+    background: var(--card-bg);
+    border: 1px solid transparent;
+    cursor: default;
+    box-shadow: none;
+}
+
+.ms-cell.ms-revealed:hover { background: var(--card-bg); }
+
+.ms-cell.ms-mine {
+    background: #EF4444 !important;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.ms-cell.ms-flagged {
+    color: #EF4444;
+    font-size: 18px;
+}
+
+/* 数字配色 */
+.ms-cell[data-count="1"] { color: #60A5FA; }
+.ms-cell[data-count="2"] { color: #34D399; }
+.ms-cell[data-count="3"] { color: #F87171; }
+.ms-cell[data-count="4"] { color: #A78BFA; }
+.ms-cell[data-count="5"] { color: #FBBF24; }
+.ms-cell[data-count="6"] { color: #22D3EE; }
+.ms-cell[data-count="7"] { color: #F472B6; }
+.ms-cell[data-count="8"] { color: #9CA3AF; }

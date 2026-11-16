@@ -1,0 +1,80 @@
+/* ========================================== */
+/* 贪吃蛇样式 */
+/* ========================================== */
+.snake-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    color: var(--text-color);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.snake-info {
+    display: flex;
+    gap: 15px;
+    font-weight: 600;
+}
+
+.snake-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.snake-select {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-color);
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+.snake-select:hover {
+    border-color: var(--primary-color);
+}
+.snake-select option {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+#snake-canvas {
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    max-width: 100%;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.snake-legend {
+    display: flex;
+    justify-content: center;
+    gap: 10px 15px;
+    margin-top: 15px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+    padding: 0 10px;
+}
+
+.snake-legend span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.snake-tip {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.snake-tip strong {
+    color: var(--primary-color);
+}

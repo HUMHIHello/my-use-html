@@ -1,0 +1,257 @@
+/* ========================================== */
+/* 指南页面：折叠模块与卡片 */
+/* ========================================== */
+.guide-module {
+    background: var(--module-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.guide-module:hover { border-color: var(--card-hover); }
+
+.module-title {
+    padding: 16px 24px;
+    font-weight: 700;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--module-title-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.module-title:hover { background: var(--card-border); }
+.module-title .arrow { color: var(--primary-color); transition: 0.3s; font-size: 20px; display: inline-block; }
+.guide-module.open .module-title .arrow { transform: rotate(180deg); }
+
+.module-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+    padding: 0 24px;
+    background: var(--card-bg);
+}
+
+.guide-module.open .module-content {
+    max-height: 9000px;
+    padding: 16px 24px 24px;
+}
+
+.guide-card {
+    background: var(--module-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.guide-card:last-child { margin-bottom: 0; }
+.guide-card:hover { border-color: var(--card-hover); }
+
+.guide-title {
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    background: var(--module-title-bg);
+}
+
+.guide-title .arrow { color: var(--primary-color); transition: 0.3s; font-size: 18px; display: inline-block; }
+.guide-card.open .guide-title .arrow { transform: rotate(180deg); }
+
+.guide-content {
+    max-height: 0;
+    padding: 0 18px;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+    background: var(--card-bg);
+}
+
+.guide-card.open .guide-content {
+    max-height: 9000px;
+    padding: 16px 18px 20px;
+}
+
+.guide-content .step-img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    margin: 8px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.guide-content .step-caption {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 6px 0 10px;
+}
+
+.module-backup .module-title { border-left: 4px solid #F59E0B; }
+
+/* ========================================== */
+/* 工具页面：搜索与列表 */
+/* ========================================== */
+.search-input {
+    width: 100%;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-color);
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+.search-input::placeholder { color: var(--text-muted); }
+
+.tool-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.tool-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: 0.2s;
+    animation: popIn 0.4s ease backwards;
+}
+
+.tool-item:nth-child(1) { animation-delay: 0.05s; }
+.tool-item:nth-child(2) { animation-delay: 0.1s; }
+.tool-item:nth-child(3) { animation-delay: 0.15s; }
+.tool-item:nth-child(4) { animation-delay: 0.2s; }
+.tool-item:nth-child(5) { animation-delay: 0.25s; }
+.tool-item:nth-child(6) { animation-delay: 0.3s; }
+
+.tool-item:hover {
+    background: var(--primary-bg);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.tool-item .icon { font-size: 28px; }
+.tool-item .info { flex: 1; }
+.tool-item .name { font-weight: 600; font-size: 16px; }
+.tool-item .desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+.tool-item .link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 14px;
+    background: var(--primary-bg);
+    padding: 4px 14px;
+    border-radius: 20px;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.tool-item .link:hover {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* ========================================== */
+/* 公告页面 */
+/* ========================================== */
+.notice-list { display: flex; flex-direction: column; gap: 18px; margin-top: 10px; }
+
+.notice-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    transition: 0.2s;
+}
+
+.notice-card:hover { border-color: var(--card-hover); }
+
+.notice-card.pinned {
+    border-left: 6px solid #FBBF24;
+    background: rgba(251,191,36,0.05);
+    border-color: #FBBF24;
+}
+
+.notice-card .notice-title {
+    font-weight: 700;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.notice-card .notice-title .pin-icon { color: #FBBF24; font-size: 18px; }
+.notice-card .notice-content { color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+.notice-card .notice-date { font-size: 12px; color: var(--text-muted); margin-top: 8px; text-align: right; }
+
+.copy-btn {
+    background: var(--primary-bg);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 8px;
+    transition: 0.2s;
+    vertical-align: middle;
+}
+
+.copy-btn:hover { background: var(--primary-color); color: #fff; }
+
+/* ========================================== */
+/* 全局提示框 (Toast) */
+/* ========================================== */
+.toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 15px;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.toast.show { bottom: 100px; opacity: 1; }
+
+/* 工具卡片动画 */
+@keyframes popIn {
+    0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.guide-card { animation: popIn 0.3s ease backwards; }

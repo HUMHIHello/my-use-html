@@ -1,0 +1,27 @@
+/* ========================================== */
+/* 游戏面板切换结构 */
+/* ========================================== */
+.game-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.game-tab {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.game-tab.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.game-panel { display: none; }
+.game-panel.active { display: block; }

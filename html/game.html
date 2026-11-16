@@ -1,0 +1,119 @@
+<div id="page-game" class="page">
+    <div class="section-sub">🎮 在线游戏</div>
+
+    <div class="game-tabs">
+        <button class="game-tab active" data-game="minesweeper">💣 扫雷</button>
+        <button class="game-tab" data-game="snake">🐍 贪吃蛇</button>
+        <button class="game-tab" data-game="tetris">🧱 俄罗斯方块</button>
+    </div>
+
+
+
+
+
+
+    <div id="minesweeper-container" class="game-panel active">
+        <div class="ms-difficulty">
+            <button class="ms-diff-btn active" data-level="easy">初级 9×9</button>
+            <button class="ms-diff-btn" data-level="medium">中级 16×16</button>
+            <button class="ms-diff-btn" data-level="hard">高级 16×30</button>
+            <button class="ms-diff-btn" data-level="fullscreen">满屏</button>
+            <button class="ms-diff-btn" id="ms-btn-custom-toggle">自定义</button>
+        </div>
+
+        <div id="ms-custom-panel" class="ms-custom-panel">
+            <label>行: <input type="number" id="ms-input-rows" value="16" min="5" max="50"></label>
+            <label>列: <input type="number" id="ms-input-cols" value="30" min="5" max="50"></label>
+            <label>雷: <input type="number" id="ms-input-mines" value="99" min="1"></label>
+            <button id="ms-btn-apply-custom" class="ms-diff-btn active" style="padding: 4px 12px;">开始</button>
+        </div>
+
+        <div class="ms-options">
+            <label><input type="checkbox" id="ms-auto-flag"> 自动标雷</label>
+        </div>
+
+        <div class="ms-status-bar">
+            <div class="ms-led" id="ms-mine-counter">010</div>
+            <button id="ms-face-btn" class="ms-face-btn">🙂</button>
+            <div class="ms-led" id="ms-timer">000</div>
+        </div>
+
+        <div id="minesweeper-board" class="ms-board"></div>
+    </div>
+
+
+
+
+    <div id="snake-container" class="game-panel">
+        <!-- 状态栏 -->
+        <div class="snake-header">
+            <div class="snake-info">
+                <span>得分: <span id="snake-score">0</span></span>
+                <span>生命: <span id="snake-lives">❤️❤️❤️</span></span>
+                <span id="snake-buffs" style="color: var(--primary-color); font-size: 14px;"></span>
+                <span id="snake-special-timer" style="color: #A78BFA; font-size: 14px;"></span>
+            </div>
+            <div class="snake-controls">
+                <select id="snake-map-size" class="snake-select">
+                    <option value="small">小地图 (15x15)</option>
+                    <option value="medium" selected>中地图 (20x20)</option>
+                    <option value="large">大地图 (25x25)</option>
+                </select>
+                <button id="snake-start-btn" class="reset-btn">🔄 新游戏</button>
+            </div>
+        </div>
+        <canvas id="snake-canvas" width="400" height="400"></canvas>
+        
+        <!-- ⭐ 更清晰、更简洁的食物图例 -->
+        <div class="snake-legend">
+            <span><span style="color: #EF4444;">🍎</span> 普通 <b>+10分 长+1</b></span>
+            <span><span style="color: #A78BFA;">🍇</span> 双倍 <b>+20分 长+2</b></span>
+            <span><span style="color: #10B981;">🧪</span> 药水 <b>+5分 回1命 长+1</b></span>
+            <span><span style="color: #FBBF24;">🍏</span> 金苹果 <b>+20分 回满血 长+1</b></span>
+            <span><span style="color: #4B5563;">💣</span> 炸弹 <b>-30分 扣1命 短3</b></span>
+            <span><span style="color: #22D3EE;">⚡</span> 闪电 <b>+10分 无敌5s 长+1</b></span>
+            <span><span style="color: #60A5FA;">❄️</span> 冰霜 <b>+10分 减速3s 长+1</b></span>
+        </div>
+
+        <p class="snake-tip">
+            方向键 / WASD 控制方向 | 游戏中按住 <strong>空格键</strong> 加速
+        </p>
+    </div>
+
+
+
+    <!-- 俄罗斯方块容器 -->
+    <div id="tetris-container" class="game-panel">
+        <div class="tetris-layout">
+            <!-- 左侧：游戏画布 -->
+            <div class="tetris-main">
+                <canvas id="tetris-canvas" width="300" height="600"></canvas>
+            </div>
+            
+            <!-- 右侧：数据面板 -->
+            <div class="tetris-sidebar">
+                <div class="tetris-info-box">
+                    <div class="tetris-label">分数</div>
+                    <div id="tetris-score" class="tetris-value">0</div>
+                </div>
+                <div class="tetris-info-box">
+                    <div class="tetris-label">消行</div>
+                    <div id="tetris-lines" class="tetris-value">0</div>
+                </div>
+                <div class="tetris-info-box">
+                    <div class="tetris-label">等级</div>
+                    <div id="tetris-level" class="tetris-value">1</div>
+                </div>
+                <div class="tetris-info-box">
+                    <div class="tetris-label">下一个</div>
+                    <canvas id="tetris-next-canvas" width="120" height="120"></canvas>
+                </div>
+                <button id="tetris-restart-btn" class="reset-btn" style="width: 100%;">🔄 新游戏</button>
+            </div>
+        </div>
+        
+         <p class="snake-tip" style="margin-top: 20px;">
+             ← → / A D 移动 | ↓ / S 加速下落 | ↑ / W 旋转 | 空格 瞬间落底 | P 暂停
+         </p>
+    </div>
+</div>

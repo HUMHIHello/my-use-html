@@ -1,0 +1,88 @@
+/* ========================================== */
+/* 主题变量配置 */
+/* ========================================== */
+:root {
+    /* 默认暗色主题 */
+    --bg-color: #0B0E14;
+    --text-color: #E8EDF5;
+    --text-muted: #6A7A8E;
+    --text-secondary: #C8D6E5;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.06);
+    --card-hover: rgba(75, 158, 255, 0.25);
+    --primary-color: #4B9EFF;
+    --primary-bg: rgba(75, 158, 255, 0.15);
+    --module-bg: rgba(255, 255, 255, 0.02);
+    --module-title-bg: rgba(255, 255, 255, 0.03);
+    --nav-bg: rgba(18, 24, 34, 0.92);
+    --border-color: rgba(255, 255, 255, 0.05);
+    color-scheme: dark;
+}
+
+/* 亮色主题（当 body 拥有 .light-theme 类时生效） */
+body.light-theme {
+    --bg-color: #F3F4F6;
+    --text-color: #1F2937;
+    --text-muted: #6B7280;
+    --text-secondary: #4B5563;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-border: rgba(0, 0, 0, 0.05);
+    --card-hover: rgba(75, 158, 255, 0.4);
+    --primary-color: #3B82F6;
+    --primary-bg: rgba(59, 130, 246, 0.1);
+    --module-bg: #FFFFFF;
+    --module-title-bg: #F9FAFB;
+    --nav-bg: rgba(255, 255, 255, 0.92);
+    --border-color: rgba(0, 0, 0, 0.05);
+    color-scheme: light;
+}
+
+/* ========================================== */
+/* 全局重置与基础样式 */
+/* ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 100px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.app-wrapper {
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* 页面切换动画 */
+.page { display: none; animation: fadeUp 0.25s ease; }
+.page.active { display: block; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section-sub {
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 30px 0 10px;
+}
