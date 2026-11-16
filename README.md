@@ -20,7 +20,9 @@
 4. **俄罗斯方块**：7-bag 随机算法、幽灵方块落点预测、完整的旋转踢墙（Wall Kick）机制、多倍速等级系统。
 
 ## 目录结构
-E:\工程文件\GITHUB\JAVASCRIPT PROJECT\MY-USE-HTML
+
+```text
+MY-USE-HTML
 |   index.html
 |   
 +---assets
@@ -76,4 +78,3 @@ E:\工程文件\GITHUB\JAVASCRIPT PROJECT\MY-USE-HTML
         script.js
         snake.js
         tetris.js
-        
