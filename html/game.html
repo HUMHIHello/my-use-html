@@ -64,17 +64,6 @@
         </div>
         <canvas id="snake-canvas" width="400" height="400"></canvas>
 
-        <!-- ⭐ 贪吃蛇移动端虚拟按键 -->
-        <div class="mobile-controls snake-mobile">
-            <div class="d-pad">
-                <button class="m-btn m-up" data-key="ArrowUp">▲</button>
-                <button class="m-btn m-left" data-key="ArrowLeft">◀</button>
-                <button class="m-btn m-down" data-key="ArrowDown">▼</button>
-                <button class="m-btn m-right" data-key="ArrowRight">▶</button>
-            </div>
-            <button class="m-btn m-action" data-key="Space">加速</button>
-        </div>
-        
         <!-- ⭐ 更清晰、更简洁的食物图例 -->
         <div class="snake-legend">
             <span><span style="color: #EF4444;">🍎</span> 普通 <b>+10分 长+1</b></span>
@@ -126,18 +115,33 @@
          <p class="snake-tip" style="margin-top: 20px;">
              ← → / A D 移动 | ↓ / S 加速下落 | ↑ / W 旋转 | 空格 瞬间落底 | P 暂停
          </p>
-
-        <!-- ⭐ 俄罗斯方块移动端虚拟按键 -->
-        <div class="mobile-controls tetris-mobile">
-            <div class="tetris-d-pad">
-                <button class="m-btn" data-key="ArrowLeft">◀</button>
-                <button class="m-btn" data-key="ArrowDown">▼</button>
-                <button class="m-btn" data-key="ArrowRight">▶</button>
-            </div>
-            <div class="tetris-actions">
-                <button class="m-btn" data-key="Space">瞬降</button>
-                <button class="m-btn" data-key="ArrowUp">旋转</button>
-            </div>
-        </div>
     </div>
+    
+    <!-- ⭐ 全局虚拟按键容器（默认隐藏） -->
+<div id="vc-container" class="vc-container">
+    <!-- 贪吃蛇按键 -->
+    <div class="vc-group" id="vc-snake" style="display: none;">
+        <div class="vc-dpad">
+            <button class="vc-btn vc-w" data-key="ArrowUp">W</button>
+            <button class="vc-btn vc-a" data-key="ArrowLeft">A</button>
+            <button class="vc-btn vc-s" data-key="ArrowDown">S</button>
+            <button class="vc-btn vc-d" data-key="ArrowRight">D</button>
+        </div>
+        <button class="vc-btn vc-action" data-key="Space">加速</button>
+    </div>
+
+    <!-- 俄罗斯方块按键 -->
+    <div class="vc-group" id="vc-tetris" style="display: none;">
+        <div class="vc-dpad">
+            <button class="vc-btn vc-w" data-key="ArrowUp">W<br><span style="font-size:10px">旋转</span></button>
+            <button class="vc-btn vc-a" data-key="ArrowLeft">A</button>
+            <button class="vc-btn vc-s" data-key="ArrowDown">S</button>
+            <button class="vc-btn vc-d" data-key="ArrowRight">D</button>
+        </div>
+        <button class="vc-btn vc-action" data-key="Space">瞬降</button>
+    </div>
+</div>
+
+<!-- ⭐ 悬浮开关按钮 -->
+<button id="vc-toggle" class="vc-toggle" title="虚拟键盘">🎮</button>
 </div>

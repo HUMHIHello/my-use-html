@@ -41,3 +41,187 @@
     .guide-title { font-size: 13px; padding: 10px 12px; }
     .tool-item .link { font-size: 13px; padding: 4px 12px; }
 }
+
+/* ========================================== */
+/* 移动端虚拟按键适配 */
+/* ========================================== */
+
+/* 默认隐藏，只在手机屏幕显示 */
+.mobile-controls {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 15px;
+        padding: 0 10px;
+    }
+
+    .m-btn {
+        background: var(--card-bg);
+        border: 2px solid var(--card-border);
+        color: var(--text-color);
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        user-select: none;
+        touch-action: manipulation; /* 防止双击缩放 */
+        transition: 0.1s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .m-btn:active {
+        background: var(--primary-bg);
+        border-color: var(--primary-color);
+        transform: scale(0.95);
+    }
+
+    /* 贪吃蛇左侧十字键布局 */
+    .d-pad {
+        display: grid;
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(2, 50px);
+        gap: 5px;
+    }
+    .m-up { grid-column: 2; grid-row: 1; }
+    .m-left { grid-column: 1; grid-row: 2; }
+    .m-down { grid-column: 2; grid-row: 2; }
+    .m-right { grid-column: 3; grid-row: 2; }
+
+    /* 贪吃蛇右侧加速键 */
+    .m-action {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--primary-bg);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+        font-size: 16px;
+    }
+
+    /* 俄罗斯方块底部布局 */
+    .tetris-mobile {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .tetris-d-pad {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .tetris-d-pad .m-btn {
+        width: 60px;
+        height: 50px;
+    }
+    .tetris-actions {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .tetris-actions .m-btn {
+        flex: 1;
+        height: 50px;
+    }
+}
+
+/* ========================================== */
+/* 移动端悬浮虚拟按键 */
+/* ========================================== */
+.vc-toggle {
+    position: fixed;
+    bottom: 100px; /* 在底部导航上方 */
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 24px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: none; /* 默认电脑端隐藏 */
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+.vc-toggle:active {
+    transform: scale(0.9);
+}
+
+.vc-container {
+    position: fixed;
+    bottom: 80px; /* 紧贴底部导航上方 */
+    left: 0;
+    width: 100%;
+    display: none; /* 默认隐藏，由JS控制 */
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 999;
+    pointer-events: none; /* 让空白区域能穿透点击 */
+}
+
+.vc-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    pointer-events: auto;
+}
+
+/* 十字键布局 */
+.vc-dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 55px);
+    grid-template-rows: repeat(2, 55px);
+    gap: 6px;
+}
+
+.vc-btn {
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 12px;
+    user-select: none;
+    touch-action: none; /* 防止滑动页面 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.vc-btn:active {
+    background: rgba(75, 158, 255, 0.8);
+}
+
+.vc-w { grid-column: 2; grid-row: 1; }
+.vc-a { grid-column: 1; grid-row: 2; }
+.vc-s { grid-column: 2; grid-row: 2; }
+.vc-d { grid-column: 3; grid-row: 2; }
+
+.vc-action {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: rgba(75, 158, 255, 0.4);
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+/* 只在手机/平板端显示开关 */
+@media (max-width: 768px) {
+    .vc-toggle {
+        display: flex;
+    }
+}
