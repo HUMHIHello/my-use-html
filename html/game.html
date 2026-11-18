@@ -63,6 +63,17 @@
             </div>
         </div>
         <canvas id="snake-canvas" width="400" height="400"></canvas>
+
+        <!-- ⭐ 贪吃蛇移动端虚拟按键 -->
+        <div class="mobile-controls snake-mobile">
+            <div class="d-pad">
+                <button class="m-btn m-up" data-key="ArrowUp">▲</button>
+                <button class="m-btn m-left" data-key="ArrowLeft">◀</button>
+                <button class="m-btn m-down" data-key="ArrowDown">▼</button>
+                <button class="m-btn m-right" data-key="ArrowRight">▶</button>
+            </div>
+            <button class="m-btn m-action" data-key="Space">加速</button>
+        </div>
         
         <!-- ⭐ 更清晰、更简洁的食物图例 -->
         <div class="snake-legend">
@@ -115,5 +126,18 @@
          <p class="snake-tip" style="margin-top: 20px;">
              ← → / A D 移动 | ↓ / S 加速下落 | ↑ / W 旋转 | 空格 瞬间落底 | P 暂停
          </p>
+
+        <!-- ⭐ 俄罗斯方块移动端虚拟按键 -->
+        <div class="mobile-controls tetris-mobile">
+            <div class="tetris-d-pad">
+                <button class="m-btn" data-key="ArrowLeft">◀</button>
+                <button class="m-btn" data-key="ArrowDown">▼</button>
+                <button class="m-btn" data-key="ArrowRight">▶</button>
+            </div>
+            <div class="tetris-actions">
+                <button class="m-btn" data-key="Space">瞬降</button>
+                <button class="m-btn" data-key="ArrowUp">旋转</button>
+            </div>
+        </div>
     </div>
 </div>

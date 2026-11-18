@@ -255,6 +255,34 @@ function bindEvents() {
             if (search) search.focus();
         }
     });
+    
+    // 8. 移动端虚拟按键映射（派发虚拟 KeyboardEvent）
+    document.querySelectorAll('.m-btn').forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        
+        // 处理触摸开始
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // 阻止屏幕滚动
+            
+            // 如果是空格（加速），需要派发 keydown
+            if (key === 'Space') {
+                document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', code: 'Space' }));
+            } else {
+                // 方向键直接派发 keydown
+                document.dispatchEvent(new KeyboardEvent('keydown', { key: key, code: key }));
+            }
+        }, { passive: false });
+
+        // 处理触摸结束
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            
+            // 如果是空格，需要派发 keyup 停止加速
+            if (key === 'Space') {
+                document.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', code: 'Space' }));
+            }
+        }, { passive: false });
+    });
 }
 
 // ==========================================
