@@ -1,0 +1,369 @@
+/* ========================================== */
+/* 虚拟按键控制器（电脑 / 手机通用） */
+/* ========================================== */
+
+.vc-container {
+    --vc-scale: 1;
+    position: fixed;
+    left: 16px;
+    bottom: 96px;
+    z-index: 1200;
+    display: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+.vc-container.vc-open {
+    display: block;
+}
+
+.vc-panel {
+    font-size: calc(16px * var(--vc-scale, 1));
+    max-width: calc(100vw - 16px);
+    padding: 0.5em;
+    background: rgba(18, 24, 34, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.1em;
+    box-shadow: 0 1em 2.6em rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: vc-pop 0.16s ease-out;
+}
+
+@keyframes vc-pop {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---------- 顶部工具栏 ---------- */
+.vc-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0 0.15em 0.45em;
+    font-size: clamp(12px, 0.8em, 16px);
+    color: var(--text-muted);
+}
+
+.vc-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0.15em 0.1em 0.15em 0.25em;
+    font-size: 1.15em;
+    line-height: 1;
+    letter-spacing: -2px;
+    color: var(--text-secondary);
+    cursor: grab;
+    touch-action: none;
+}
+
+.vc-container.vc-dragging .vc-drag-handle {
+    cursor: grabbing;
+}
+
+.vc-drag-tip {
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+.vc-size-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.15em;
+    margin-left: auto;
+    padding: 0.1em;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.6em;
+}
+
+.vc-size-label {
+    min-width: 2.9em;
+    font-size: 0.8em;
+    text-align: center;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.vc-tool-btn {
+    appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7em;
+    height: 1.7em;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 0.45em;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 1em;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.vc-tool-btn:hover {
+    background: var(--primary-bg);
+    color: var(--primary-color);
+}
+
+.vc-tool-btn:active {
+    transform: scale(0.92);
+}
+
+#vc-close:hover {
+    background: rgba(239, 68, 68, 0.18);
+    color: #EF4444;
+}
+
+/* ---------- 按键区 ---------- */
+.vc-body {
+    display: flex;
+    justify-content: center;
+}
+
+.vc-group {
+    display: none;
+}
+
+.vc-group.vc-active {
+    display: flex;
+}
+
+.vc-group-row {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9em;
+    max-width: 100%;
+}
+
+/* 真正的十字方向键 */
+.vc-dpad {
+    display: grid;
+    flex: none;
+    grid-template-columns: repeat(3, 3.25em);
+    grid-template-rows: repeat(3, 3.25em);
+    gap: 0.36em;
+}
+
+.vc-up    { grid-column: 2; grid-row: 1; }
+.vc-left  { grid-column: 1; grid-row: 2; }
+.vc-center {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    opacity: 0.7;
+    pointer-events: none;
+    user-select: none;
+}
+.vc-right { grid-column: 3; grid-row: 2; }
+.vc-down  { grid-column: 2; grid-row: 3; }
+
+.vc-btn {
+    appearance: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.05em;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 0.7em;
+    background: rgba(30, 41, 59, 0.88);
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.25em;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 0.18em 0.5em rgba(0, 0, 0, 0.3);
+    transition: background 0.1s, border-color 0.1s, transform 0.08s;
+}
+
+.vc-btn small {
+    font-size: 0.48em;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    opacity: 0.72;
+}
+
+.vc-btn.vc-pressed,
+.vc-btn:active {
+    background: var(--primary-color);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(0.96);
+}
+
+/* 右侧功能键 */
+.vc-action-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55em;
+}
+
+.vc-action {
+    flex: none;
+    width: 4.6em;
+    height: 4.6em;
+    border-radius: 50%;
+    border-color: rgba(75, 158, 255, 0.6);
+    background: rgba(75, 158, 255, 0.32);
+    font-size: 1.05em;
+}
+
+.vc-action-small {
+    width: 4.6em;
+    height: 2.8em;
+    border-radius: 1em;
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 0.86em;
+}
+
+/* ---------- 扫雷：标雷模式 ---------- */
+.vc-group-mine {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.15em 0.25em 0.3em;
+}
+
+.vc-flag-toggle {
+    flex-direction: row;
+    gap: 0.45em;
+    padding: 0.6em 1em;
+    border-radius: 0.8em;
+    font-size: 1em;
+}
+
+.vc-flag-toggle[aria-pressed="true"] {
+    background: #EF4444;
+    border-color: #F87171;
+}
+
+.vc-flag-toggle[aria-pressed="true"] .vc-flag-icon {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+}
+
+.vc-flag-icon {
+    font-size: 1.15em;
+}
+
+.vc-hint {
+    font-size: 0.66em;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* ---------- 悬浮开关 ---------- */
+.vc-toggle {
+    position: fixed;
+    right: 80px;
+    bottom: 100px;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4B9EFF, #A78BFA);
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.vc-toggle:hover {
+    transform: scale(1.08);
+}
+
+.vc-toggle:active {
+    transform: scale(0.92);
+}
+
+.vc-toggle.vc-hidden {
+    display: none;
+}
+
+/* ---------- 亮色主题 ---------- */
+body.light-theme .vc-panel {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .vc-btn {
+    background: #F3F4F6;
+    border-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+}
+
+body.light-theme .vc-btn.vc-pressed,
+body.light-theme .vc-btn:active,
+body.light-theme .vc-flag-toggle[aria-pressed="true"] {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+body.light-theme .vc-flag-toggle[aria-pressed="true"] {
+    background: #EF4444;
+}
+
+body.light-theme .vc-action {
+    background: rgba(59, 130, 246, 0.12);
+}
+
+body.light-theme .vc-action.vc-pressed,
+body.light-theme .vc-action:active {
+    background: var(--primary-color);
+}
+
+body.light-theme .vc-size-controls {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- 小屏适配 ---------- */
+@media (max-width: 480px) {
+    .vc-action-stack {
+        flex-direction: row;
+    }
+
+    .vc-toggle {
+        right: 72px;
+        bottom: 96px;
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-panel,
+    .vc-toggle,
+    .vc-btn {
+        animation: none;
+        transition: none;
+    }
+}

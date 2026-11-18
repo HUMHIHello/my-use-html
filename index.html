@@ -21,6 +21,64 @@
     <div id="page-container"></div>
 </div>
 
+<!-- ⭐ 虚拟按键控制器（电脑 / 手机通用：可开关、缩放、拖动） -->
+<div id="vc-container" class="vc-container">
+    <div class="vc-panel" id="vc-panel">
+        <div class="vc-toolbar">
+            <span class="vc-drag-handle" id="vc-drag-handle" title="按住拖动，调整虚拟按键位置">⠿</span>
+            <span class="vc-drag-tip">拖动</span>
+            <div class="vc-size-controls">
+                <button type="button" class="vc-tool-btn" id="vc-size-down" title="缩小虚拟按键" aria-label="缩小虚拟按键">−</button>
+                <span class="vc-size-label" id="vc-size-label">100%</span>
+                <button type="button" class="vc-tool-btn" id="vc-size-up" title="放大虚拟按键" aria-label="放大虚拟按键">＋</button>
+            </div>
+            <button type="button" class="vc-tool-btn" id="vc-reset" title="恢复默认位置和大小" aria-label="恢复默认位置和大小">⟲</button>
+            <button type="button" class="vc-tool-btn" id="vc-close" title="关闭虚拟按键" aria-label="关闭虚拟按键">✕</button>
+        </div>
+
+        <div class="vc-body">
+            <!-- 扫雷：标雷模式（手机也可长按格子标雷） -->
+            <div class="vc-group vc-group-mine" id="vc-minesweeper">
+                <button type="button" class="vc-btn vc-flag-toggle" id="vc-flag-toggle" aria-pressed="false">
+                    <span class="vc-flag-icon">🚩</span>
+                    <span class="vc-flag-text" id="vc-flag-text">标雷模式</span>
+                </button>
+                <p class="vc-hint">长按格子也能标雷</p>
+            </div>
+
+            <!-- 贪吃蛇：十字方向键 + 加速 -->
+            <div class="vc-group vc-group-row" id="vc-snake">
+                <div class="vc-dpad" role="group" aria-label="贪吃蛇方向键">
+                    <button type="button" class="vc-btn vc-key vc-up" data-code="ArrowUp" aria-label="向上">↑</button>
+                    <button type="button" class="vc-btn vc-key vc-left" data-code="ArrowLeft" data-repeat="true" aria-label="向左">←</button>
+                    <span class="vc-center" aria-hidden="true">🐍</span>
+                    <button type="button" class="vc-btn vc-key vc-right" data-code="ArrowRight" data-repeat="true" aria-label="向右">→</button>
+                    <button type="button" class="vc-btn vc-key vc-down" data-code="ArrowDown" data-repeat="true" aria-label="向下">↓</button>
+                </div>
+                <button type="button" class="vc-btn vc-action vc-key" id="vc-snake-action" data-code="Space" aria-label="加速">加速</button>
+            </div>
+
+            <!-- 俄罗斯方块：十字方向键 + 瞬降 / 暂停 -->
+            <div class="vc-group vc-group-row" id="vc-tetris">
+                <div class="vc-dpad" role="group" aria-label="俄罗斯方块方向键">
+                    <button type="button" class="vc-btn vc-key vc-up" data-code="ArrowUp" aria-label="旋转">↻<small>旋转</small></button>
+                    <button type="button" class="vc-btn vc-key vc-left" data-code="ArrowLeft" data-repeat="true" aria-label="左移">←</button>
+                    <span class="vc-center" aria-hidden="true">🧱</span>
+                    <button type="button" class="vc-btn vc-key vc-right" data-code="ArrowRight" data-repeat="true" aria-label="右移">→</button>
+                    <button type="button" class="vc-btn vc-key vc-down" data-code="ArrowDown" data-repeat="true" aria-label="加速下落">↓<small>下落</small></button>
+                </div>
+                <div class="vc-action-stack">
+                    <button type="button" class="vc-btn vc-action vc-key" id="vc-tetris-action" data-code="Space" aria-label="瞬降">瞬降</button>
+                    <button type="button" class="vc-btn vc-action vc-action-small vc-key" id="vc-tetris-pause" data-code="KeyP" aria-label="暂停">暂停</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ⭐ 虚拟按键开关（电脑 / 手机均显示） -->
+<button id="vc-toggle" class="vc-toggle vc-hidden" type="button" aria-pressed="false" title="虚拟按键（可拖动 / 缩放）">🎮</button>
+
 <!-- 底部导航 -->
 <div class="bottom-nav">
     <button class="nav-item active" data-target="page-notice">
@@ -45,6 +103,7 @@
 <script src="js/minesweeper.js"></script>
 <script src="js/snake.js"></script>
 <script src="js/tetris.js"></script>
+<script src="js/virtual-controls.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

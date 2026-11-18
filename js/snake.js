@@ -73,6 +73,12 @@ function initSnake() {
     document.getElementById('snake-start-btn').addEventListener('click', snakeReset);
 
     document.addEventListener('keydown', (e) => {
+        // 只响应游戏页 + 贪吃蛇面板处于激活状态时的按键，避免虚拟按键 / 键盘误操作其他游戏
+        const page = document.getElementById('page-game');
+        const container = document.getElementById('snake-container');
+        if (!page || !page.classList.contains('active')) return;
+        if (!container || !container.classList.contains('active')) return;
+
         if (e.code === 'Space') {
             e.preventDefault(); 
             

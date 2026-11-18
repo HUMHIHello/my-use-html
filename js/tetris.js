@@ -75,7 +75,9 @@ function initTetris() {
     document.getElementById('tetris-restart-btn').addEventListener('click', tetrisStart);
 
     document.addEventListener('keydown', (e) => {
+        const page = document.getElementById('page-game');
         const container = document.getElementById('tetris-container');
+        if (!page || !page.classList.contains('active')) return;
         if (!container || !container.classList.contains('active')) return;
 
         if (!tRunning || tPaused || tGameOver) {

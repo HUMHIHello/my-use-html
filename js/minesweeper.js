@@ -18,6 +18,7 @@ let msFlagsPlaced = 0;
 let msTimerInterval = null;
 let msTimeElapsed = 0;
 let msAutoFlagEnabled = false;
+let msFlagMode = false;
 
 // DOM 节点引用（在 initMinesweeper 中赋值）
 let msBoardEl, msFaceBtn, msMineCounterEl, msTimerEl;
@@ -116,6 +117,7 @@ function msInit(level = msLevel) {
     const { rows, cols, mines } = msCurrentConfig;
 
     msBoardEl.innerHTML = '';
+    msBoardEl.classList.toggle('ms-flag-mode', msFlagMode);
     msBoardEl.style.gridTemplateColumns = `repeat(${cols}, 28px)`;
     
     if (cols > 20) msBoardEl.style.overflowX = 'auto';
@@ -142,27 +144,136 @@ function msInit(level = msLevel) {
             el.className = 'ms-cell';
             el.dataset.r = r;
             el.dataset.c = c;
-            
-            el.addEventListener('click', () => msLeftClick(r, c));
-            el.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                msRightClick(r, c);
-            });
 
-            let touchTimer;
-            el.addEventListener('touchstart', () => {
-                touchTimer = setTimeout(() => {
-                    msRightClick(r, c);
-                    el.addEventListener('touchend', (ev) => ev.preventDefault(), { once: true });
-                }, 500);
-            });
-            el.addEventListener('touchend', () => clearTimeout(touchTimer));
-            el.addEventListener('touchmove', () => clearTimeout(touchTimer));
+            msBindCellInput(el, r, c);
 
             msBoardEl.appendChild(el);
         }
         msBoard.push(row);
     }
+}
+
+// ==========================================
+//  格子输入：鼠标左右键 + 触屏长按标雷
+// ==========================================
+function msBindCellInput(el, r, c) {
+    let pressTimer = null;
+    let pressStart = null;
+    let lastPointerType = 'mouse';
+    let longPressFired = false;
+    let lastLongPressTime = 0;
+
+    const cancelPress = () => {
+        if (pressTimer !== null) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+    };
+
+    const finishPress = () => {
+        cancelPress();
+        pressStart = null;
+
+        if (longPressFired) {
+            longPressFired = false;
+            // 记录触发时间，用来吞掉长按后浏览器补发的 click
+            lastLongPressTime = Date.now();
+        }
+    };
+
+    const triggerLongPress = () => {
+        // 已经触发过，或刚结束一次长按（浏览器补发了 contextmenu）时不再重复标雷
+        if (longPressFired || Date.now() - lastLongPressTime < 600) return;
+
+        cancelPress();
+        longPressFired = true;
+        lastLongPressTime = Date.now();
+
+        msRightClick(r, c);
+
+        el.classList.add('ms-long-press');
+        setTimeout(() => el.classList.remove('ms-long-press'), 200);
+
+        if (navigator.vibrate) {
+            try { navigator.vibrate(30); } catch (_) {}
+        }
+    };
+
+    el.addEventListener('pointerdown', (e) => {
+        lastPointerType = e.pointerType || 'mouse';
+
+        // 只处理左键 / 触摸；右键交给 contextmenu
+        if (e.button !== undefined && e.button !== 0) return;
+
+        longPressFired = false;
+        pressStart = { x: e.clientX, y: e.clientY };
+        cancelPress();
+
+        if (lastPointerType !== 'touch' && lastPointerType !== 'pen') return;
+
+        pressTimer = setTimeout(triggerLongPress, 420);
+    });
+
+    el.addEventListener('pointermove', (e) => {
+        if (!pressStart) return;
+        // 手指明显移动视为滚动 / 滑动，取消长按
+        if (Math.abs(e.clientX - pressStart.x) > 10 ||
+            Math.abs(e.clientY - pressStart.y) > 10) {
+            cancelPress();
+            pressStart = null;
+        }
+    });
+
+    el.addEventListener('pointerup', finishPress);
+
+    el.addEventListener('pointercancel', () => {
+        cancelPress();
+        pressStart = null;
+        longPressFired = false;
+    });
+
+    el.addEventListener('pointerleave', () => {
+        if (lastPointerType === 'mouse') {
+            cancelPress();
+            pressStart = null;
+        }
+    });
+
+    el.addEventListener('click', (e) => {
+        // 关键修复：长按标雷后浏览器还会补发一次 click，不拦掉会立刻把雷挖开
+        if (Date.now() - lastLongPressTime < 500) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        msLeftClick(r, c);
+    });
+
+    el.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+
+        // 触屏长按由定时器处理；部分浏览器会提前弹出系统菜单，这里也补一次标雷并取消定时器
+        if (lastPointerType === 'touch' || lastPointerType === 'pen') {
+            triggerLongPress();
+            return;
+        }
+
+        msRightClick(r, c);
+    });
+}
+
+function msGetFlagMode() {
+    return msFlagMode;
+}
+
+function msSetFlagMode(enabled) {
+    msFlagMode = !!enabled;
+
+    if (msBoardEl) {
+        msBoardEl.classList.toggle('ms-flag-mode', msFlagMode);
+    }
+
+    return msFlagMode;
 }
 
 // ==========================================
@@ -209,6 +320,13 @@ function msCalcNeighbors() {
 
 function msLeftClick(r, c) {
     if (msGameOver) return;
+
+    // 开启「标雷模式」后，单击格子即插旗 / 取消插旗
+    if (msFlagMode) {
+        msRightClick(r, c);
+        return;
+    }
+
     const cell = msBoard[r][c];
     
     if (cell.isRevealed && cell.neighborMines > 0) {

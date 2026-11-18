@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (typeof initMinesweeper === 'function') initMinesweeper();
     if (typeof initSnake === 'function') initSnake();
     if (typeof initTetris === 'function') initTetris();
+
+    // 5. 初始化虚拟按键（电脑 / 手机通用）
+    if (typeof initVirtualControls === 'function') initVirtualControls();
 });
 
 // 动态加载 HTML 片段
@@ -256,137 +259,7 @@ function bindEvents() {
         }
     });
 
-    // 8. 移动端虚拟按键映射（派发虚拟 KeyboardEvent）
-    document.querySelectorAll('.m-btn').forEach(btn => {
-        const key = btn.getAttribute('data-key');
-        
-        // 处理触摸开始
-        btn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // 阻止屏幕滚动
-            
-            // 如果是空格（加速），需要派发 keydown
-            if (key === 'Space') {
-                document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', code: 'Space' }));
-            } else {
-                // 方向键直接派发 keydown
-                document.dispatchEvent(new KeyboardEvent('keydown', { key: key, code: key }));
-            }
-        }, { passive: false });
-
-        // 处理触摸结束
-        btn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            
-            // 如果是空格，需要派发 keyup 停止加速
-            if (key === 'Space') {
-                document.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', code: 'Space' }));
-            }
-        }, { passive: false });
-    });
-
-        // 9. 虚拟键盘逻辑
-    const vcToggle = document.getElementById('vc-toggle');
-    const vcContainer = document.getElementById('vc-container');
-    const vcSnake = document.getElementById('vc-snake');
-    const vcTetris = document.getElementById('vc-tetris');
-
-    // 读取玩家上次的开关偏好
-    let isVcOpen = localStorage.getItem('vcOpen') === 'true';
-
-    function updateVcDisplay() {
-        if (window.innerWidth > 768) {
-            vcContainer.style.display = 'none';
-            return;
-        }
-        
-        // 判断当前是不是在游戏页
-        const isGamePage = document.getElementById('page-game').classList.contains('active');
-        if (!isGamePage) {
-            vcContainer.style.display = 'none';
-            vcToggle.style.display = 'none';
-            return;
-        }
-        
-        vcToggle.style.display = 'flex';
-
-        // 判断当前激活的是哪个游戏
-        const activeTab = document.querySelector('.game-tab.active');
-        if (!activeTab) return;
-        const game = activeTab.dataset.game;
-
-        // 切换内部按键组
-        if (game === 'snake') {
-            vcSnake.style.display = 'flex';
-            vcTetris.style.display = 'none';
-        } else if (game === 'tetris') {
-            vcSnake.style.display = 'none';
-            vcTetris.style.display = 'flex';
-        } else {
-            vcSnake.style.display = 'none';
-            vcTetris.style.display = 'none';
-            vcContainer.style.display = 'none';
-            return;
-        }
-
-        // 根据开关状态显示
-        vcContainer.style.display = isVcOpen ? 'flex' : 'none';
-    }
-
-    vcToggle.addEventListener('click', () => {
-        isVcOpen = !isVcOpen;
-        localStorage.setItem('vcOpen', isVcOpen);
-        updateVcDisplay();
-    });
-
-    // 监听页面和Tab切换，刷新键盘状态
-    document.body.addEventListener('click', function(e) {
-        if (e.target.closest('.nav-item') || e.target.closest('.game-tab')) {
-            setTimeout(updateVcDisplay, 50);
-        }
-    });
-
-    // 初始化
-    updateVcDisplay();
-
-    // ⭐ 绑定虚拟按键触摸事件（含长按连发）
-    document.querySelectorAll('.vc-btn').forEach(btn => {
-        let pressTimer = null;
-        let repeatTimer = null;
-        const key = btn.getAttribute('data-key');
-
-        const dispatchKey = (type) => {
-            document.dispatchEvent(new KeyboardEvent(type, { key: key === 'Space' ? ' ' : key, code: key }));
-        };
-
-        // 按下
-        btn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            dispatchKey('keydown');
-
-            // 处理长按连发（左右下键）
-            if (key !== 'ArrowUp' && key !== 'Space') {
-                pressTimer = setTimeout(() => {
-                    repeatTimer = setInterval(() => dispatchKey('keydown'), 80);
-                }, 300); // 按住 300ms 后开始连发
-            }
-        }, { passive: false });
-
-        // 抬起
-        const endPress = (e) => {
-            if (e) e.preventDefault();
-            clearTimeout(pressTimer);
-            clearInterval(repeatTimer);
-            dispatchKey('keyup');
-        };
-
-        btn.addEventListener('touchend', endPress, { passive: false });
-        btn.addEventListener('touchcancel', endPress, { passive: false });
-
-        // 兼容鼠标测试
-        btn.addEventListener('mousedown', (e) => { e.preventDefault(); dispatchKey('keydown'); });
-        btn.addEventListener('mouseup', endPress);
-        btn.addEventListener('mouseleave', endPress);
-    });
+    // 8. 虚拟按键由 js/virtual-controls.js 统一处理
 }
 
 // ==========================================

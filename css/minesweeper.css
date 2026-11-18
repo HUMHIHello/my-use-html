@@ -162,9 +162,25 @@
     font-weight: 800;
     cursor: pointer;
     user-select: none;
+    -webkit-user-select: none;
     -webkit-touch-callout: none;
+    touch-action: manipulation;
     transition: 0.1s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ms-board.ms-flag-mode .ms-cell {
+    cursor: crosshair;
+}
+
+.ms-cell.ms-long-press {
+    animation: ms-long-press-pulse 0.2s ease-out;
+}
+
+@keyframes ms-long-press-pulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(0.82); }
+    100% { transform: scale(1); }
 }
 
 .ms-cell:hover {
