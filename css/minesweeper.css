@@ -88,6 +88,7 @@
     border: 1px solid var(--card-border);
     border-radius: 8px;
     background: var(--card-bg);
+    color: var(--text-color);
     font-size: 13px;
     cursor: pointer;
     transition: 0.2s;
