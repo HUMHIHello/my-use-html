@@ -72,11 +72,35 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .ms-options input[type="checkbox"] {
     cursor: pointer;
     transform: scale(1.2);
+}
+
+.ms-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ms-tool-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--primary-bg);
+    color: var(--primary-color);
+}
+
+.ms-tool-btn:active {
+    transform: scale(0.96);
 }
 
 /* 状态栏 */
@@ -152,8 +176,9 @@
 .ms-cell {
     width: 28px;
     height: 28px;
-    background: var(--module-title-bg);
-    border: 1px solid var(--card-border);
+    position: relative;
+    background: linear-gradient(145deg, #3B4A61 0%, #242D3E 100%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 4px;
     display: flex;
     justify-content: center;
@@ -165,12 +190,89 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     touch-action: manipulation;
-    transition: 0.1s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.12s, border-color 0.12s, transform 0.08s, box-shadow 0.12s;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+body.light-theme .ms-cell {
+    background: linear-gradient(145deg, #FFFFFF 0%, #D9E1EC 100%);
+    border-color: rgba(31, 41, 55, 0.18);
+    box-shadow: inset 0 1px 0 #FFFFFF, 0 2px 4px rgba(31, 41, 55, 0.16);
 }
 
 .ms-board.ms-flag-mode .ms-cell {
     cursor: crosshair;
+}
+
+.ms-cell:hover {
+    background: linear-gradient(145deg, #4B5E7A 0%, #2F3B50 100%);
+    border-color: var(--primary-color);
+}
+
+body.light-theme .ms-cell:hover {
+    background: linear-gradient(145deg, #FFFFFF 0%, #CFE0F7 100%);
+}
+
+.ms-cell:not(.ms-revealed):active {
+    transform: scale(0.92);
+    filter: brightness(1.08);
+}
+
+.ms-cell.ms-revealed {
+    background: var(--card-bg);
+    border: 1px solid transparent;
+    cursor: default;
+    box-shadow: none;
+}
+
+body.light-theme .ms-cell.ms-revealed {
+    background: #E8EDF4;
+}
+
+.ms-cell.ms-revealed:hover {
+    background: var(--card-bg);
+}
+
+body.light-theme .ms-cell.ms-revealed:hover {
+    background: #E8EDF4;
+}
+
+.ms-cell.ms-mine {
+    background: #EF4444 !important;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.ms-cell.ms-flagged {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.34), rgba(239, 68, 68, 0.12));
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #EF4444;
+    font-size: 18px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 10px rgba(239, 68, 68, 0.14);
+}
+
+/* 数字已经解出但 3×3 内还没有标完雷时，点击数字让未打开格子闪动提醒 */
+.ms-cell.ms-chord-hint {
+    z-index: 3;
+    border-color: #FBBF24 !important;
+    animation: ms-chord-hint 0.72s ease;
+}
+
+@keyframes ms-chord-hint {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+    }
+    22% {
+        transform: scale(1.16);
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5), 0 0 16px rgba(251, 191, 36, 0.55);
+    }
+    55% {
+        transform: scale(0.97);
+    }
+    78% {
+        transform: scale(1.07);
+    }
 }
 
 .ms-cell.ms-long-press {
@@ -183,31 +285,6 @@
     100% { transform: scale(1); }
 }
 
-.ms-cell:hover {
-    background: var(--primary-bg);
-    border-color: var(--primary-color);
-}
-
-.ms-cell.ms-revealed {
-    background: var(--card-bg);
-    border: 1px solid transparent;
-    cursor: default;
-    box-shadow: none;
-}
-
-.ms-cell.ms-revealed:hover { background: var(--card-bg); }
-
-.ms-cell.ms-mine {
-    background: #EF4444 !important;
-    color: #fff;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-}
-
-.ms-cell.ms-flagged {
-    color: #EF4444;
-    font-size: 18px;
-}
-
 /* 数字配色 */
 .ms-cell[data-count="1"] { color: #60A5FA; }
 .ms-cell[data-count="2"] { color: #34D399; }
@@ -217,3 +294,319 @@
 .ms-cell[data-count="6"] { color: #22D3EE; }
 .ms-cell[data-count="7"] { color: #F472B6; }
 .ms-cell[data-count="8"] { color: #9CA3AF; }
+
+/* ========================================== */
+/* 通关成绩弹窗与排行榜 */
+/* ========================================== */
+.ms-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.ms-modal.show {
+    display: flex;
+}
+
+.ms-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.64);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.ms-modal-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100vh - 36px);
+    overflow: auto;
+    background: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+    animation: ms-modal-in 0.18s ease-out;
+}
+
+body.light-theme .ms-modal-card {
+    background: #FFFFFF;
+}
+
+@keyframes ms-modal-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+.ms-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 20px 10px;
+}
+
+.ms-modal-head h3 {
+    font-size: 19px;
+    color: var(--text-color);
+}
+
+.ms-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    background: var(--card-bg);
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ms-modal-close:hover {
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.ms-modal-body {
+    padding: 4px 20px 20px;
+}
+
+.ms-modal-body[hidden] {
+    display: none;
+}
+
+.ms-score-line {
+    margin: 4px 0 4px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+.ms-score-line strong {
+    margin: 0 3px;
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.ms-score-config {
+    margin-bottom: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.ms-name-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.ms-name-field input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 9px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.ms-name-field input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+.ms-modal-tip {
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.ms-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ms-action-btn {
+    padding: 9px 18px;
+    border: 1px solid var(--card-border);
+    border-radius: 9px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ms-action-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--primary-bg);
+}
+
+.ms-action-btn.primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #FFFFFF;
+}
+
+.ms-action-btn.primary:hover {
+    filter: brightness(1.08);
+}
+
+.ms-lb-filters {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.ms-lb-filter {
+    padding: 5px 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ms-lb-filter:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.ms-lb-filter.active {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: #FFFFFF;
+}
+
+.ms-lb-count {
+    margin-left: 3px;
+    font-size: 11px;
+    opacity: 0.72;
+}
+
+.ms-lb-note {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.ms-lb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: min(46vh, 360px);
+    padding-right: 2px;
+    overflow-y: auto;
+}
+
+.ms-lb-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2px 10px;
+    padding: 9px 11px;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    background: var(--card-bg);
+}
+
+.ms-lb-rank {
+    text-align: center;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+.ms-lb-rank.rank-1 { color: #FBBF24; }
+.ms-lb-rank.rank-2 { color: #CBD5E1; }
+.ms-lb-rank.rank-3 { color: #D97706; }
+
+.ms-lb-name {
+    overflow: hidden;
+    font-weight: 600;
+    color: var(--text-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ms-lb-time {
+    font-weight: 800;
+    color: var(--primary-color);
+    font-variant-numeric: tabular-nums;
+}
+
+.ms-lb-meta {
+    grid-column: 2 / 4;
+    overflow: hidden;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ms-lb-empty {
+    padding: 28px 10px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.ms-lb-more {
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+    .ms-modal {
+        padding: 10px;
+    }
+
+    .ms-modal-head {
+        padding: 14px 16px 8px;
+    }
+
+    .ms-modal-body {
+        padding: 4px 16px 16px;
+    }
+
+    .ms-lb-list {
+        max-height: 50vh;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ms-cell.ms-chord-hint {
+        animation: none;
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.55);
+    }
+
+    .ms-modal-card {
+        animation: none;
+    }
+}

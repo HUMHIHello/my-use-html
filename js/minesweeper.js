@@ -8,11 +8,25 @@ const MS_LEVELS = {
     hard:   { rows: 16, cols: 30, mines: 99 }
 };
 
+const MS_LEADERBOARD_KEY = 'msLeaderboard';
+const MS_PLAYER_NAME_KEY = 'msPlayerName';
+const MS_LEADERBOARD_MAX = 300;
+const MS_LEADERBOARD_SHOW = 30;
+const MS_LB_FILTERS = [
+    { key: 'all', label: '全部' },
+    { key: 'easy', label: '初级' },
+    { key: 'medium', label: '中级' },
+    { key: 'hard', label: '高级' },
+    { key: 'fullscreen', label: '满屏' },
+    { key: 'custom', label: '自定义' }
+];
+
 let msLevel = 'easy';
 let msCurrentConfig = {};
 let msBoard = [];
 let msMinesPlaced = false;
 let msGameOver = false;
+let msGameResult = null;
 let msCellsRevealed = 0;
 let msFlagsPlaced = 0;
 let msTimerInterval = null;
@@ -20,8 +34,15 @@ let msTimeElapsed = 0;
 let msAutoFlagEnabled = false;
 let msFlagMode = false;
 
+// 成绩弹窗 / 排行榜状态
+let msPendingScore = null;
+let msScorePromptTimer = null;
+let msLeaderboardFilter = 'easy';
+
 // DOM 节点引用（在 initMinesweeper 中赋值）
 let msBoardEl, msFaceBtn, msMineCounterEl, msTimerEl;
+let msModalEl, msModalTitleEl, msScorePanelEl, msLeaderboardPanelEl;
+let msScoreTimeEl, msScoreConfigEl, msScoreNameEl, msLbFiltersEl, msLbListEl;
 
 // 初始化控制函数
 function initMinesweeper() {
@@ -30,6 +51,30 @@ function initMinesweeper() {
     msFaceBtn = document.getElementById('ms-face-btn');
     msMineCounterEl = document.getElementById('ms-mine-counter');
     msTimerEl = document.getElementById('ms-timer');
+
+    // 成绩弹窗移到 body 下，避免被游戏页的页面动画影响 fixed 定位
+    msModalEl = document.getElementById('ms-modal');
+    msModalTitleEl = document.getElementById('ms-modal-title');
+    msScorePanelEl = document.getElementById('ms-score-panel');
+    msLeaderboardPanelEl = document.getElementById('ms-leaderboard-panel');
+    msScoreTimeEl = document.getElementById('ms-score-time');
+    msScoreConfigEl = document.getElementById('ms-score-config');
+    msScoreNameEl = document.getElementById('ms-score-name');
+    msLbFiltersEl = document.getElementById('ms-lb-filters');
+    msLbListEl = document.getElementById('ms-lb-list');
+
+    if (msModalEl && msModalEl.parentElement !== document.body) {
+        document.body.appendChild(msModalEl);
+    }
+
+    // 导出 / 排行榜入口
+    const exportBtn = document.getElementById('ms-export-btn');
+    if (exportBtn) exportBtn.addEventListener('click', msExportBoard);
+
+    const leaderboardBtn = document.getElementById('ms-leaderboard-btn');
+    if (leaderboardBtn) leaderboardBtn.addEventListener('click', () => msOpenLeaderboard(msLevel));
+
+    msBindModalEvents();
 
     // 绑定事件
     if (msFaceBtn) msFaceBtn.addEventListener('click', () => msInit(msLevel));
@@ -126,9 +171,18 @@ function msInit(level = msLevel) {
     msBoard = [];
     msMinesPlaced = false;
     msGameOver = false;
+    msGameResult = null;
     msCellsRevealed = 0;
     msFlagsPlaced = 0;
     msTimeElapsed = 0;
+
+    if (msScorePromptTimer) {
+        clearTimeout(msScorePromptTimer);
+        msScorePromptTimer = null;
+    }
+    msPendingScore = null;
+    msCloseModal();
+
     clearInterval(msTimerInterval);
     msTimerEl.textContent = '000';
     msFaceBtn.textContent = '🙂';
@@ -339,6 +393,7 @@ function msLeftClick(r, c) {
 
     if (cell.isMine) {
         msGameOver = true;
+        msGameResult = 'lost';
         clearInterval(msTimerInterval);
         msFaceBtn.textContent = '😵';
         msRevealAllMines();
@@ -355,32 +410,66 @@ function msChordReveal(r, c) {
     const cell = msBoard[r][c];
     let flagsAround = 0;
     const neighbors = [];
+    const hiddenNeighbors = [];
 
     for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
             if (dr === 0 && dc === 0) continue;
             const nr = r + dr, nc = c + dc;
             if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-                if (msBoard[nr][nc].isFlagged) flagsAround++;
-                else if (!msBoard[nr][nc].isRevealed) neighbors.push({ r: nr, c: nc });
+                const nCell = msBoard[nr][nc];
+                if (nCell.isFlagged) flagsAround++;
+                if (!nCell.isRevealed) {
+                    hiddenNeighbors.push({ r: nr, c: nc, flagged: nCell.isFlagged });
+                    if (!nCell.isFlagged) neighbors.push({ r: nr, c: nc });
+                }
             }
         }
     }
 
-    if (flagsAround === cell.neighborMines) {
-        for (const n of neighbors) {
-            const nCell = msBoard[n.r][n.c];
-            if (nCell.isMine) {
-                msGameOver = true;
-                clearInterval(msTimerInterval);
-                msFaceBtn.textContent = '😵';
-                msRevealAllMines();
-                msUpdateCellEl(n.r, n.c, '💣', 'ms-mine');
-                return;
-            }
-            msRevealCell(n.r, n.c);
+    // 3×3 内的雷还没标完：不挖开，改为闪动未打开的格子提醒玩家
+    if (flagsAround !== cell.neighborMines) {
+        msHintHiddenCells(hiddenNeighbors);
+        return;
+    }
+
+    for (const n of neighbors) {
+        const nCell = msBoard[n.r][n.c];
+        if (nCell.isMine) {
+            msGameOver = true;
+            msGameResult = 'lost';
+            clearInterval(msTimerInterval);
+            msFaceBtn.textContent = '😵';
+            msRevealAllMines();
+            msUpdateCellEl(n.r, n.c, '💣', 'ms-mine');
+            return;
         }
-        msCheckWin();
+        msRevealCell(n.r, n.c);
+    }
+    msCheckWin();
+}
+
+function msHintHiddenCells(cells) {
+    if (!cells.length) return;
+
+    cells.forEach(({ r, c }) => {
+        const el = msGetCellEl(r, c);
+        if (!el) return;
+
+        el.classList.remove('ms-chord-hint');
+        // 强制重排，让连续点击时动画可以重新播放
+        void el.offsetWidth;
+        el.classList.add('ms-chord-hint');
+
+        clearTimeout(el._msChordHintTimer);
+        el._msChordHintTimer = setTimeout(() => {
+            el.classList.remove('ms-chord-hint');
+            el._msChordHintTimer = null;
+        }, 760);
+    });
+
+    if (navigator.vibrate) {
+        try { navigator.vibrate(20); } catch (_) {}
     }
 }
 
@@ -461,6 +550,12 @@ function msRevealCell(r, c) {
     cell.isRevealed = true;
     msCellsRevealed++;
     const el = msGetCellEl(r, c);
+
+    // 如果这个格子正处于提示动画中，挖开时立即停止提示
+    el.classList.remove('ms-chord-hint');
+    clearTimeout(el._msChordHintTimer);
+    el._msChordHintTimer = null;
+
     el.classList.add('ms-revealed');
 
     if (cell.neighborMines > 0) {
@@ -477,13 +572,28 @@ function msRevealCell(r, c) {
 }
 
 function msCheckWin() {
+    if (msGameOver) return;
+
     const totalSafe = msCurrentConfig.rows * msCurrentConfig.cols - msCurrentConfig.mines;
-    if (msCellsRevealed === totalSafe) {
-        msGameOver = true;
-        clearInterval(msTimerInterval);
-        msFaceBtn.textContent = '😎';
-        msAutoFlagRemaining();
-    }
+    if (msCellsRevealed !== totalSafe) return;
+
+    msGameOver = true;
+    msGameResult = 'won';
+    clearInterval(msTimerInterval);
+    msFaceBtn.textContent = '😎';
+    msAutoFlagRemaining();
+
+    // 记录本次成绩，稍等棋盘渲染完再询问是否上榜
+    msPendingScore = {
+        time: msTimeElapsed,
+        difficulty: msLevel,
+        rows: msCurrentConfig.rows,
+        cols: msCurrentConfig.cols,
+        mines: msCurrentConfig.mines
+    };
+
+    if (msScorePromptTimer) clearTimeout(msScorePromptTimer);
+    msScorePromptTimer = setTimeout(msOpenScorePrompt, 350);
 }
 
 function msRevealAllMines() {
@@ -535,4 +645,381 @@ function msStartTimer() {
         if (msTimeElapsed > 999) msTimeElapsed = 999;
         msTimerEl.textContent = String(msTimeElapsed).padStart(3, '0');
     }, 1000);
+}
+
+// ==========================================
+//  导出当前棋盘
+// ==========================================
+function msBuildExportSnapshot() {
+    const { rows, cols, mines } = msCurrentConfig;
+    const board = [];
+    const visibleGrid = [];
+    const solutionGrid = [];
+
+    for (let r = 0; r < rows; r++) {
+        const row = [];
+        const visibleRow = [];
+        const solutionRow = [];
+
+        for (let c = 0; c < cols; c++) {
+            const cell = msBoard[r][c];
+            row.push({
+                mine: cell.isMine,
+                revealed: cell.isRevealed,
+                flagged: cell.isFlagged,
+                near: cell.neighborMines
+            });
+
+            if (cell.isFlagged) visibleRow.push('F');
+            else if (cell.isRevealed) visibleRow.push(cell.isMine ? 'X' : String(cell.neighborMines));
+            else visibleRow.push('#');
+
+            solutionRow.push(cell.isMine ? '*' : '.');
+        }
+
+        board.push(row);
+        visibleGrid.push(visibleRow.join(''));
+        solutionGrid.push(solutionRow.join(''));
+    }
+
+    const totalSafe = rows * cols - mines;
+
+    return {
+        game: 'minesweeper',
+        formatVersion: 1,
+        exportedAt: new Date().toISOString(),
+        status: msGameResult || 'playing',
+        level: msLevel,
+        levelLabel: msGetLevelLabel(msLevel),
+        config: { rows, cols, mines },
+        progress: {
+            timeSeconds: msTimeElapsed,
+            flagsPlaced: msFlagsPlaced,
+            cellsRevealed: msCellsRevealed,
+            safeCellsTotal: totalSafe,
+            remainingSafeCells: Math.max(0, totalSafe - msCellsRevealed),
+            minesPlaced: msMinesPlaced
+        },
+        visibleGrid,
+        solutionGrid,
+        board,
+        note: msMinesPlaced
+            ? 'solutionGrid 与 board.mine 包含真实雷位，仅用于复盘和可解性分析。'
+            : '当前棋盘尚未落雷（minesPlaced=false），导出的雷位为空。'
+    };
+}
+
+function msExportBoard() {
+    if (!msCurrentConfig || !msCurrentConfig.rows) {
+        showToast('扫雷尚未初始化');
+        return;
+    }
+
+    try {
+        const snapshot = msBuildExportSnapshot();
+        const stamp = msFormatDateStamp(new Date());
+        const blob = new Blob([JSON.stringify(snapshot, null, 2)], {
+            type: 'application/json;charset=utf-8'
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = `minesweeper-${stamp}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(msMinesPlaced ? '棋盘已导出，可用于复盘分析' : '尚未落雷，已导出初始棋盘');
+    } catch (_) {
+        showToast('导出失败，请重试');
+    }
+}
+
+// ==========================================
+//  成绩弹窗与本地排行榜
+// ==========================================
+function msBindModalEvents() {
+    if (!msModalEl) return;
+
+    const closeBtn = document.getElementById('ms-modal-close');
+    if (closeBtn) closeBtn.addEventListener('click', msCloseModal);
+
+    const skipBtn = document.getElementById('ms-score-skip');
+    if (skipBtn) {
+        skipBtn.addEventListener('click', () => {
+            msPendingScore = null;
+            msCloseModal();
+        });
+    }
+
+    const saveBtn = document.getElementById('ms-score-save');
+    if (saveBtn) saveBtn.addEventListener('click', msSaveScore);
+
+    const lbCloseBtn = document.getElementById('ms-lb-close');
+    if (lbCloseBtn) lbCloseBtn.addEventListener('click', msCloseModal);
+
+    const backdrop = msModalEl.querySelector('.ms-modal-backdrop');
+    if (backdrop) backdrop.addEventListener('click', msCloseModal);
+
+    if (msScoreNameEl) {
+        msScoreNameEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                msSaveScore();
+            }
+        });
+    }
+
+    if (msLbFiltersEl) {
+        msLbFiltersEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-ms-filter]');
+            if (!btn) return;
+            msLeaderboardFilter = btn.getAttribute('data-ms-filter');
+            msRenderLeaderboard();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && msModalEl.classList.contains('show')) {
+            msCloseModal();
+        }
+    });
+}
+
+function msCloseModal() {
+    if (!msModalEl) return;
+
+    msModalEl.classList.remove('show');
+    msModalEl.setAttribute('aria-hidden', 'true');
+
+    // 关闭成绩询问视为放弃本次记录
+    if (msScorePanelEl && !msScorePanelEl.hidden) {
+        msPendingScore = null;
+    }
+}
+
+function msOpenScorePrompt() {
+    if (!msPendingScore || !msModalEl || !msScorePanelEl) return;
+
+    // 已经切到其它页面 / 其它游戏时不再弹出
+    const page = document.getElementById('page-game');
+    if (page && !page.classList.contains('active')) return;
+    const mineContainer = document.getElementById('minesweeper-container');
+    if (mineContainer && !mineContainer.classList.contains('active')) return;
+
+    msModalTitleEl.textContent = '🎉 恭喜通关';
+    msScoreTimeEl.textContent = msPendingScore.time;
+    msScoreConfigEl.textContent = msGetScoreConfigLabel(msPendingScore);
+    msScoreNameEl.value = '';
+
+    try {
+        msScoreNameEl.value = localStorage.getItem(MS_PLAYER_NAME_KEY) || '';
+    } catch (_) {
+        msScoreNameEl.value = '';
+    }
+
+    msScorePanelEl.hidden = false;
+    msLeaderboardPanelEl.hidden = true;
+    msModalEl.classList.add('show');
+    msModalEl.setAttribute('aria-hidden', 'false');
+
+    setTimeout(() => {
+        try {
+            msScoreNameEl.focus();
+            msScoreNameEl.select();
+        } catch (_) {}
+    }, 60);
+}
+
+function msSaveScore() {
+    if (!msPendingScore || !msScoreNameEl) {
+        msCloseModal();
+        return;
+    }
+
+    const score = msPendingScore;
+    let name = (msScoreNameEl.value || '').trim().slice(0, 16);
+    if (!name) name = '匿名玩家';
+
+    const record = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        name: name,
+        time: score.time,
+        difficulty: score.difficulty,
+        rows: score.rows,
+        cols: score.cols,
+        mines: score.mines,
+        date: new Date().toISOString()
+    };
+
+    try {
+        const list = msLoadLeaderboard();
+        list.push(record);
+
+        if (list.length > MS_LEADERBOARD_MAX) {
+            list.splice(0, list.length - MS_LEADERBOARD_MAX);
+        }
+
+        localStorage.setItem(MS_LEADERBOARD_KEY, JSON.stringify(list));
+        localStorage.setItem(MS_PLAYER_NAME_KEY, name);
+    } catch (_) {
+        showToast('无法保存成绩：浏览器未允许本地存储');
+        return;
+    }
+
+    const rank = msGetRecordRank(record);
+    msPendingScore = null;
+    msCloseModal();
+
+    showToast(rank > 0
+        ? `成绩已记录！${msGetLevelLabel(record.difficulty)}第 ${rank} 名`
+        : '成绩已记录');
+}
+
+function msOpenLeaderboard(filter) {
+    if (!msModalEl) return;
+
+    if (filter) msLeaderboardFilter = filter;
+    if (!MS_LB_FILTERS.some(f => f.key === msLeaderboardFilter)) {
+        msLeaderboardFilter = 'all';
+    }
+
+    msModalTitleEl.textContent = '🏆 扫雷排行榜';
+    msScorePanelEl.hidden = true;
+    msLeaderboardPanelEl.hidden = false;
+
+    msRenderLeaderboard();
+
+    msModalEl.classList.add('show');
+    msModalEl.setAttribute('aria-hidden', 'false');
+}
+
+function msRenderLeaderboard() {
+    if (!msLbFiltersEl || !msLbListEl) return;
+
+    const all = msLoadLeaderboard();
+
+    msLbFiltersEl.innerHTML = MS_LB_FILTERS.map(f => {
+        const count = f.key === 'all'
+            ? all.length
+            : all.filter(r => r.difficulty === f.key).length;
+        const active = f.key === msLeaderboardFilter ? ' active' : '';
+
+        return `<button type="button" class="ms-lb-filter${active}" data-ms-filter="${f.key}">${f.label}<span class="ms-lb-count">${count}</span></button>`;
+    }).join('');
+
+    const records = msLeaderboardFilter === 'all'
+        ? all.slice()
+        : all.filter(r => r.difficulty === msLeaderboardFilter);
+
+    records.sort(msCompareRecords);
+
+    if (!records.length) {
+        msLbListEl.innerHTML = '<div class="ms-lb-empty">还没有成绩记录，通关后就能上榜了。</div>';
+        return;
+    }
+
+    const top = records.slice(0, MS_LEADERBOARD_SHOW);
+    const rowsHtml = top.map((rec, index) => {
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : String(index + 1);
+        const rows = Number.isFinite(rec.rows) ? rec.rows : '?';
+        const cols = Number.isFinite(rec.cols) ? rec.cols : '?';
+        const mines = Number.isFinite(rec.mines) ? rec.mines : '?';
+        const meta = `${msGetLevelLabel(rec.difficulty)} · ${rows}×${cols} · ${mines}雷 · ${msFormatDate(rec.date)}`;
+
+        return `<div class="ms-lb-row">
+            <span class="ms-lb-rank rank-${index + 1}">${medal}</span>
+            <span class="ms-lb-name">${msEscapeHtml(rec.name)}</span>
+            <span class="ms-lb-time">${msFormatTime(rec.time)}</span>
+            <span class="ms-lb-meta">${msEscapeHtml(meta)}</span>
+        </div>`;
+    }).join('');
+
+    const moreHtml = records.length > top.length
+        ? `<div class="ms-lb-more">仅显示前 ${top.length} 条，共 ${records.length} 条</div>`
+        : '';
+
+    msLbListEl.innerHTML = rowsHtml + moreHtml;
+}
+
+function msLoadLeaderboard() {
+    try {
+        const raw = localStorage.getItem(MS_LEADERBOARD_KEY);
+        if (!raw) return [];
+
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+
+        return parsed.filter(r =>
+            r && typeof r === 'object' &&
+            typeof r.name === 'string' &&
+            Number.isFinite(r.time) &&
+            typeof r.difficulty === 'string'
+        );
+    } catch (_) {
+        return [];
+    }
+}
+
+function msGetRecordRank(record) {
+    const same = msLoadLeaderboard()
+        .filter(r => r.difficulty === record.difficulty)
+        .sort(msCompareRecords);
+
+    const index = same.findIndex(r => r.id === record.id);
+    return index === -1 ? 0 : index + 1;
+}
+
+function msCompareRecords(a, b) {
+    const byTime = (a.time || 0) - (b.time || 0);
+    if (byTime !== 0) return byTime;
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+}
+
+function msGetLevelLabel(level) {
+    const labels = {
+        easy: '初级',
+        medium: '中级',
+        hard: '高级',
+        fullscreen: '满屏',
+        custom: '自定义'
+    };
+    return labels[level] || '自定义';
+}
+
+function msGetScoreConfigLabel(score) {
+    return `${msGetLevelLabel(score.difficulty)} ${score.rows}×${score.cols} / ${score.mines} 雷`;
+}
+
+function msFormatTime(seconds) {
+    const total = Math.max(0, Math.floor(Number(seconds) || 0));
+    if (total < 60) return `${total}s`;
+    return `${Math.floor(total / 60)}:${msPad2(total % 60)}`;
+}
+
+function msFormatDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return `${date.getFullYear()}-${msPad2(date.getMonth() + 1)}-${msPad2(date.getDate())}`;
+}
+
+function msFormatDateStamp(date) {
+    return `${date.getFullYear()}${msPad2(date.getMonth() + 1)}${msPad2(date.getDate())}-` +
+        `${msPad2(date.getHours())}${msPad2(date.getMinutes())}${msPad2(date.getSeconds())}`;
+}
+
+function msPad2(value) {
+    return String(value).padStart(2, '0');
+}
+
+function msEscapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[ch]));
 }

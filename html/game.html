@@ -30,6 +30,9 @@
 
         <div class="ms-options">
             <label><input type="checkbox" id="ms-auto-flag"> 自动标雷</label>
+            <button id="ms-export-btn" class="ms-tool-btn" type="button"
+                    title="导出当前棋盘 JSON（包含真实雷位，便于复盘分析）">📥 导出棋盘</button>
+            <button id="ms-leaderboard-btn" class="ms-tool-btn" type="button">🏆 排行榜</button>
         </div>
 
         <div class="ms-status-bar">
@@ -39,6 +42,41 @@
         </div>
 
         <div id="minesweeper-board" class="ms-board"></div>
+
+        <!-- 扫雷成绩 / 排行榜弹窗 -->
+        <div id="ms-modal" class="ms-modal" aria-hidden="true">
+            <div class="ms-modal-backdrop" data-ms-close></div>
+            <div class="ms-modal-card" role="dialog" aria-modal="true" aria-labelledby="ms-modal-title">
+                <div class="ms-modal-head">
+                    <h3 id="ms-modal-title">🎉 恭喜通关</h3>
+                    <button id="ms-modal-close" class="ms-modal-close" type="button" aria-label="关闭弹窗">✕</button>
+                </div>
+
+                <div id="ms-score-panel" class="ms-modal-body">
+                    <p class="ms-score-line">本次用时 <strong id="ms-score-time">0</strong> 秒</p>
+                    <p class="ms-score-config" id="ms-score-config">初级 9×9 / 10 雷</p>
+                    <label class="ms-name-field">
+                        <span>记录名字</span>
+                        <input id="ms-score-name" type="text" maxlength="16"
+                               placeholder="输入你的名字（最多 16 字）" autocomplete="nickname">
+                    </label>
+                    <p class="ms-modal-tip">排行榜只保存在当前浏览器，不会上传。</p>
+                    <div class="ms-modal-actions">
+                        <button id="ms-score-save" class="ms-action-btn primary" type="button">记录成绩</button>
+                        <button id="ms-score-skip" class="ms-action-btn" type="button">不记录</button>
+                    </div>
+                </div>
+
+                <div id="ms-leaderboard-panel" class="ms-modal-body" hidden>
+                    <div id="ms-lb-filters" class="ms-lb-filters"></div>
+                    <p class="ms-lb-note">按用时从短到长排序，最多显示前 30 条。</p>
+                    <div id="ms-lb-list" class="ms-lb-list"></div>
+                    <div class="ms-modal-actions">
+                        <button id="ms-lb-close" class="ms-action-btn primary" type="button">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
